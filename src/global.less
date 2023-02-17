@@ -15,6 +15,12 @@ body,
 
 .ant-layout {
   min-height: 100vh;
+  height: 100%;
+}
+.ant-pro,
+.ant-pro-layout,
+.ant-pro-table{
+  height: 100%;
 }
 .ant-pro-sider.ant-layout-sider.ant-pro-sider-fixed {
   left: unset;
@@ -39,12 +45,15 @@ ol {
   .ant-table {
     width: 100%;
     overflow-x: auto;
-    &-thead > tr,
-    &-tbody > tr {
-      > th,
-      > td {
+
+    &-thead>tr,
+    &-tbody>tr {
+
+      >th,
+      >td {
         white-space: pre;
-        > span {
+
+        >span {
           display: block;
         }
       }

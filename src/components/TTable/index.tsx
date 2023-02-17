@@ -1,0 +1,128 @@
+import { rule } from '@/services/ant-design-pro/api';
+import { PlusOutlined } from '@ant-design/icons';
+import { FooterToolbar, ProTable, ProTableProps } from '@ant-design/pro-components';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { Button, Table } from 'antd';
+import React, { useRef, useState } from 'react'
+
+
+export default function index(props: ProTableProps<any, any, any> | any) {
+    const {
+        actionRef = useRef(null),
+        rowKey = "",
+        columns,
+        request,
+        onDelete = undefined,
+        onRowSelection = undefined,
+        footerToolbarRender = undefined
+    } = props;
+    const [selectedRowsState, setSelectedRows] = useState([]);
+
+    const className = useEmotionCss(() => {
+        return {
+            display: 'flex',
+            flexDirection: "column",
+            '.ant-pro-table-search': {
+                height: "auto"
+            },
+            ".ant-pro-card:not(.ant-pro-table-search)": {
+                height: "100%",
+                overflow: "hidden",
+                ".ant-pro-card-body": {
+                    display: 'flex',
+                    flexDirection: "column",
+                    ".ant-table-wrapper": {
+                        height: "100%",
+                        overflow: "hidden",
+                        ".ant-spin-nested-loading": {
+                            height: "100%",
+                            overflow: "hidden",
+                            ".ant-spin-container,.ant-table-container": {
+                                height: "100%",
+                                overflow: "hidden",
+                                display: 'flex',
+                                flexDirection: "column",
+                                ".ant-table": {
+                                    height: "100%",
+                                    overflow: "hidden",
+                                    ".ant-table-header": {
+                                        overflow: "visible !important"
+                                    },
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    });
+    return (
+        React.cloneElement(<>
+            <ProTable
+                className={className}
+                bordered
+                tableLayout="fixed"
+                actionRef={actionRef}
+                // 自定义
+                rowKey={rowKey}
+                search={{
+                    labelWidth: 120,
+                }}
+                scroll={{ x: 'max-content', y: "auto" }}
+                columnsState={{
+                    persistenceKey: "dw:RecruitPartyMembersTodo:list",
+                    persistenceType: "localStorage"
+                }}
+
+                request={request}
+                columns={columns}
+                rowSelection={{
+                    onChange: (_, selectedRows: any) => {
+                        setSelectedRows(selectedRows);
+                        onRowSelection(selectedRows)
+                    },
+                    selections: [
+                        Table.SELECTION_ALL,
+                        Table.SELECTION_INVERT,
+                        Table.SELECTION_NONE,
+                    ]
+                }}
+                {...props}
+            />
+            {footerToolbarRender && <>
+                {selectedRowsState?.length > 0 && (
+                    <FooterToolbar
+                        extra={
+                            <div>
+                                已选择{' '}
+                                <a
+                                    style={{
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    {selectedRowsState.length}
+                                </a>{' '}
+                                项 &nbsp;&nbsp;
+                            </div>
+                        }
+                    >
+                        <Button
+                            onClick={async () => {
+                                await onDelete(selectedRowsState);
+                                setSelectedRows([]);
+                                actionRef.current?.reloadAndRest?.();
+                            }}
+                        >
+                            批量删除
+                        </Button>
+                    </FooterToolbar>
+                )}
+
+            </>}
+
+        </>, {
+            style: {
+                backgroundColor: "red",
+            }
+        }))
+}

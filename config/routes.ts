@@ -8,10 +8,10 @@ export default [
     access: 'canAdmin',
     routes: [
       { path: '/admin', redirect: '/admin/sub-page' },
-      { path: '/admin/sub-page', name: "sub-page", component: './Admin' },
+      { path: '/admin/sub-page', name: "sub-page", component: './List' },
     ],
   },
-  { icon: 'table', name: "TableList", path: '/list', component: './TableList' },
+  { icon: 'table', name: "TableList", path: '/list', component: './List' },
   { path: '/', redirect: '/welcome' },
   { path: '*', layout: false, component: './404' },
 ];
