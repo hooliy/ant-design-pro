@@ -1,16 +1,7 @@
 import { rule } from '@/services/ant-design-pro/api';
 import { PlusOutlined } from '@ant-design/icons';
-import {
-    FooterToolbar,
-    getPageTitle,
-    PageContainer,
-    ProTable,
-} from '@ant-design/pro-components';
-import { } from '@umijs/max';
-import { Button, Input, message, Table } from 'antd';
-import defaultSettings from '../../../config/defaultSettings';
+import { Button, Input } from 'antd';
 import React, { useRef, useState } from 'react';
-import breadcrumb from 'antd/es/breadcrumb';
 import TTable from '@/components/TTable';
 
 
@@ -23,44 +14,11 @@ import TTable from '@/components/TTable';
 
 const TableList: React.FC = () => {
     const actionRef = useRef();
-
-    /**
-     * @en-US International configuration
-     * @zh-CN 国际化配置
-     * */
-
+    const [selectRows, setSelectRows] = useState([]);
     const columns: any[] = [
         {
             title: '规则名称',
             dataIndex: 'name',
-            tip: 'The rule name is the unique key',
-            // render: (dom, entity) => {
-            //     return (
-            //         <a
-            //             onClick={() => {
-            //                 setCurrentRow(entity);
-            //                 setShowDetail(true);
-            //             }}
-            //         >
-            //             {dom}
-            //         </a>
-            //     );
-            // },
-        },
-        {
-            title: '描述',
-            dataIndex: 'desc',
-            valueType: 'textarea',
-            ellipsis: true,
-            width: 100
-        },
-        {
-            title: '服务调用次数',
-            dataIndex: 'callNo',
-            sorter: true,
-            filtered: true,
-            hideInForm: true,
-            renderText: (val: string) => `${val}${'万'}`,
         },
         {
             title: '状态',
@@ -122,14 +80,32 @@ const TableList: React.FC = () => {
             ],
         },
     ];
-    const title = getPageTitle({
-
-    }, true);
-    console.log(title, location.pathname, breadcrumb)
     return (
-        <TTable rowKey={"key"} onRowSelection={(record) => {
-            console.log(record)
-        }} columns={columns} request={rule} />
+        <TTable
+            headerTitle="dfafafad"
+            actionRef={actionRef}
+            rowKey={"key"}
+            stateKey={'list:table'}
+            columns={columns}
+            request={rule}
+            toolBarRender={() => [
+                selectRows.length > 0 && <Button
+                    key="1"
+                    onClick={() => {
+                        actionRef.current?.reloadAndRest?.();
+                    }}
+                >
+                    批量删除
+                </Button>,
+                <Button
+                    type="primary"
+                    key="2"
+                >
+                    <PlusOutlined /> 新建
+                </Button>,
+            ]}
+            onRowSelection={(rows) => setSelectRows(rows)}
+        />
     );
 };
 export default TableList;

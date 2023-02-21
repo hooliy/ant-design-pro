@@ -3,10 +3,16 @@ import { PlusOutlined } from '@ant-design/icons';
 import { FooterToolbar, ProTable, ProTableProps } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Button, Table } from 'antd';
-import React, { useRef, useState } from 'react'
+import React, { ReactNode, useRef, useState } from 'react'
+export declare type TTTableType = {
+    columns: any[],
+    stateKey: string,
+    onDelete?: () => void,
+    onRowSelection?: (row: []) => void,
+    footerToolbarRender?: ReactNode,
+}
 
-
-export default function index(props: ProTableProps<any, any, any> | any) {
+export default function index(props: ProTableProps<any, any, any> & TTTableType) {
     const {
         actionRef = useRef(null),
         rowKey = "",
@@ -14,7 +20,8 @@ export default function index(props: ProTableProps<any, any, any> | any) {
         request,
         onDelete = undefined,
         onRowSelection = undefined,
-        footerToolbarRender = undefined
+        footerToolbarRender = undefined,
+        stateKey
     } = props;
     const [selectedRowsState, setSelectedRows] = useState([]);
 
@@ -70,7 +77,7 @@ export default function index(props: ProTableProps<any, any, any> | any) {
                 }}
                 scroll={{ x: 'max-content', y: "auto" }}
                 columnsState={{
-                    persistenceKey: "dw:RecruitPartyMembersTodo:list",
+                    persistenceKey: stateKey,
                     persistenceType: "localStorage"
                 }}
 
@@ -79,7 +86,7 @@ export default function index(props: ProTableProps<any, any, any> | any) {
                 rowSelection={{
                     onChange: (_, selectedRows: any) => {
                         setSelectedRows(selectedRows);
-                        onRowSelection(selectedRows)
+                        onRowSelection ? onRowSelection(selectedRows) : undefined;
                     },
                     selections: [
                         Table.SELECTION_ALL,

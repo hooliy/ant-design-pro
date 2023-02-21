@@ -11,7 +11,7 @@ export default [
       { path: '/admin/sub-page', name: "sub-page", component: './List' },
     ],
   },
-  { icon: 'table', name: "TableList", path: '/list', component: './List' },
+  { icon: 'table', name: "TableList", path: '/list', component: './TableList' },
   { path: '/', redirect: '/welcome' },
   { path: '*', layout: false, component: './404' },
 ];
