@@ -1,5 +1,6 @@
 import { ProLayoutProps } from '@ant-design/pro-components';
-
+export const BASE_URL = "/";
+export const PROJECT_API_NAME="";
 /**
  * @name
  */
