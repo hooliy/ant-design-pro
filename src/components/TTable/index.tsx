@@ -53,7 +53,7 @@ export default function index(props: ProTableProps<any, any, any> & TTTableType)
                                     height: "100%",
                                     overflow: "hidden",
                                     ".ant-table-header": {
-                                        overflow: "visible !important"
+                                        minHeight: "48px !important"
                                     },
                                 }
                             }
@@ -64,23 +64,28 @@ export default function index(props: ProTableProps<any, any, any> & TTTableType)
         };
     });
     return (
-        React.cloneElement(<>
+        <>
             <ProTable
+                options={{
+                    fullScreen: true,
+                    reload: true,
+                    setting: true,
+                    density: false,
+                }}
                 className={className}
                 bordered
-                tableLayout="fixed"
                 actionRef={actionRef}
                 // 自定义
                 rowKey={rowKey}
                 search={{
                     labelWidth: 120,
                 }}
-                scroll={{ x: 'max-content', y: "auto" }}
+                scroll={{ x: 500, y: "auto" }}
                 columnsState={{
                     persistenceKey: stateKey,
                     persistenceType: "localStorage"
                 }}
-
+                // sticky
                 request={request}
                 columns={columns}
                 rowSelection={{
@@ -127,9 +132,5 @@ export default function index(props: ProTableProps<any, any, any> & TTTableType)
 
             </>}
 
-        </>, {
-            style: {
-                backgroundColor: "red",
-            }
-        }))
+        </>)
 }
