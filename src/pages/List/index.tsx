@@ -1,18 +1,43 @@
 import { rule } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, Input } from 'antd';
-import React, { useRef, useState } from 'react';
+import { PlusOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { Button, Input, message, Modal, Popconfirm } from 'antd';
+import React, { useReducer, useRef, useState } from 'react';
 import TTable from '@/components/TTable';
+import TPageContainer from '@/components/TPageContainer';
+import Edit from './edit';
+import { useAccess } from '@umijs/max';
+import { TableDropdown } from '@ant-design/pro-components';
+import { del } from '@/owner/common-service';
 
 
-/**
- *  Delete node
- * @zh-CN 删除节点
- *
- * @param selectedRows
- */
+
+const initialState = {
+    activeKey: 'mysubmited',
+    spinning: false,
+    loadding: false,
+    editModalVisible: false,
+    record: {}
+}
+
+function reducer(state = initialState, action: { type: string, payload: {} }) {
+    switch (action?.type) {
+        case "PAYLOAD": {
+            return {
+                ...state,
+                ...action.payload
+            }
+        }
+        default: {
+            return state;
+        }
+    }
+}
+
 
 const TableList: React.FC = () => {
+    const moduleName = "InternationalRaceReferee";
+    const [state, dispatch] = useReducer(reducer, initialState);
+    const access = useAccess();
     const actionRef = useRef();
     const [selectRows, setSelectRows] = useState([]);
     const columns: any[] = [
@@ -64,48 +89,86 @@ const TableList: React.FC = () => {
             title: '操作',
             dataIndex: 'option',
             valueType: 'option',
+            align: "center",
+            width: 120,
             render: (_, record) => [
-                <a
-                    key="config"
-                    onClick={() => {
-                        handleUpdateModalOpen(true);
-                        setCurrentRow(record);
-                    }}
-                >
-                    配置
-                </a>,
-                <a key="subscribeAlert" href="https://procomponents.ant.design/">
-                    订阅警报
-                </a>,
+                <Popconfirm disabled={!access.funcFilter('tt:list:del')} title="是否删除？" okText="是" cancelText="否"
+                    onConfirm={
+                        async () => {
+                            await del(moduleName, [record])
+                            actionRef.current?.reloadAndRest();
+                        }
+                    }
+                    icon={<QuestionCircleOutlined style={{ color: 'red' }} />}>
+                    <Button size="small" disabled={!access.funcFilter('tt:list:del')} type="link">删除</Button>
+                </Popconfirm>,
+                <Button size="small" disabled={access.funcFilter('tt:list:save')} type="link" onClick={async () => {
+                    dispatch({ type: "PAYLOAD", payload: { editModalVisible: true, record: record } });
+                }}>编辑</Button >,
+                // <TableDropdown
+                //     key="actionGroup"
+                //     onSelect={(val) => {
+                //         switch (val) {
+                //             case "2":
+                //                 break;
+                //             default:
+                //                 break;
+                //         }
+                //     }}
+                //     menus={[
+                //         {
+                //             key: '2',
+                //             name: <Button size="small" type="link" disabled={!(access.funcFilter('tt:list:save'))}>迁出</Button>,
+                //         },
+                //     ]}
+                // />,
             ],
         },
     ];
     return (
-        <TTable
-            headerTitle="dfafafad"
-            actionRef={actionRef}
-            rowKey={"key"}
-            stateKey={'list:table'}
-            columns={columns}
-            request={rule}
-            toolBarRender={() => [
-                selectRows.length > 0 && <Button
-                    key="1"
-                    onClick={() => {
-                        actionRef.current?.reloadAndRest?.();
+        <TPageContainer>
+            <TTable
+                headerTitle="dfafafad"
+                actionRef={actionRef}
+                rowKey={"key"}
+                stateKey={'list:table'}
+                columns={columns}
+                request={rule}
+                toolBarRender={() => [
+                    selectRows.length > 0 && <Button
+                        key="1"
+                        onClick={() => {
+                            actionRef.current?.reloadAndRest?.();
+                        }}
+                    >
+                        批量删除
+                    </Button>,
+                    <Button
+                        type="primary"
+                        key="2"
+                        onClick={() => {
+                            dispatch({ type: "PAYLOAD", payload: { editModalVisible: true, record: undefined } })
+                        }}
+                    >
+                        <PlusOutlined /> 新建
+                    </Button>,
+                ]}
+                onRowSelection={(rows) => setSelectRows(rows)}
+            />
+            {
+                state.editModalVisible && <Edit
+                    values={state.record}
+                    onCancel={() => {
+                        dispatch({ type: "PAYLOAD", payload: { editModalVisible: false, record: undefined } })
+                    }}
+                    onSubmit={() => {
+                        dispatch({ type: "PAYLOAD", payload: { editModalVisible: false, record: undefined } })
+                        actionRef.current?.reload();
                     }}
                 >
-                    批量删除
-                </Button>,
-                <Button
-                    type="primary"
-                    key="2"
-                >
-                    <PlusOutlined /> 新建
-                </Button>,
-            ]}
-            onRowSelection={(rows) => setSelectRows(rows)}
-        />
+                </Edit>
+            }
+        </TPageContainer>
     );
 };
 export default TableList;
