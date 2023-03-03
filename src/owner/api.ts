@@ -106,7 +106,7 @@ export async function routers() {
 }
 
 export async function queryCurrentUser() {
-    return request(`/v1/api/user/profile`, {
+    return request(`/v1/api/auth/profile`, {
         method: 'GET',
     });
 }

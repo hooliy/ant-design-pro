@@ -38,6 +38,11 @@ export default function index(props: ProTableProps<any, any, any> & TTTableType)
                 ".ant-pro-card-body": {
                     display: 'flex',
                     flexDirection: "column",
+                    ".ant-pro-table-list-toolbar-left": {
+                        overflow: "hidden",
+                        flex: 1,
+                        marginRight: 10
+                    },
                     ".ant-table-wrapper": {
                         height: "100%",
                         overflow: "hidden",
@@ -55,6 +60,9 @@ export default function index(props: ProTableProps<any, any, any> & TTTableType)
                                     ".ant-table-header": {
                                         minHeight: "40px !important"
                                     },
+                                    ".ant-table-body": {
+                                        height: "100%"
+                                    }
                                 }
                             }
                         }
@@ -92,7 +100,7 @@ export default function index(props: ProTableProps<any, any, any> & TTTableType)
                 rowSelection={{
                     onChange: (_, selectedRows: any) => {
                         setSelectedRows(selectedRows);
-                        onRowSelection ? onRowSelection(selectedRows) : undefined;
+                        onRowSelection ? onRowSelection(_, selectedRows) : undefined;
                     },
                     selections: [
                         Table.SELECTION_ALL,

@@ -15,6 +15,7 @@ export declare type TTTableType = {
 export default function index(props: PageContainerProps) {
     const className = useEmotionCss(() => {
         return {
+            height: "100%",
             display: 'flex',
             flexDirection: "column",
             overflow: "hidden",

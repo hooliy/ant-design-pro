@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { ModalForm, ProCard, ProForm, ProFormDatePicker, ProFormInstance, ProFormText } from '@ant-design/pro-components';
+import { ModalForm, ProCard, ProForm, ProFormDatePicker, ProFormInstance, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 import TLine from '@/components/TLine';
 import { useModel } from '@umijs/max';
 import { findOne, save, update } from '@/owner/common-service';
@@ -8,7 +8,7 @@ import { message } from 'antd';
 
 export default function Edit(props: any) {
   const access = useAccess();
-  const moduleName = "InternationalRaceReferee";
+  const moduleName = "operlog";
   const {
     values,
     onSubmit,
@@ -27,7 +27,7 @@ export default function Edit(props: any) {
         open={true}
         width={800}
         onFinish={async (formData) => {
-          if (access.funcFilter('tt:list:save')) {
+          if (!access.funcFilter('tt:list:save')) {
             const { code, success } = values?.id ? await update(moduleName, formData) : await save(moduleName, formData);
             if (success)
               await onSubmit();
@@ -82,7 +82,31 @@ export default function Edit(props: any) {
               md: 24,
               lg: 24
             }}
-            name="status"
+            name="url"
+            label="规则名称"
+            placeholder="请输入规则名称"
+          // readonly
+          />
+          <ProFormTextArea
+            colProps={{
+              xs: 24,
+              sm: 24,
+              md: 24,
+              lg: 24
+            }}
+            name="stack"
+            label="规则名称"
+            placeholder="请输入规则名称"
+          // readonly
+          />
+          <ProFormText
+            colProps={{
+              xs: 24,
+              sm: 24,
+              md: 24,
+              lg: 24
+            }}
+            name="message"
             label="状态"
             placeholder="请输入状态"
             rules={[
@@ -94,7 +118,7 @@ export default function Edit(props: any) {
             ]}
             readonly={mode === "read"}
           />
-          <ProFormDatePicker
+          {/* <ProFormDatePicker
             colProps={{
               xs: 24,
               sm: 24,
@@ -109,7 +133,7 @@ export default function Edit(props: any) {
             label="上次调度时间"
             placeholder={'请选择上次调度时间'}
             readonly={mode === "read"}
-          />
+          /> */}
         </ProForm.Group>
       </ModalForm>
     </>
