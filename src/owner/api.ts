@@ -30,7 +30,7 @@ export async function uploadXhr(param: any) {
         // 上传成功后调用param.success并传入上传后的文件地址
         const { value: data } = JSON.parse(xhr.responseText);
         param.success({
-            url: `https://img.qiyedajie.com` +  data.data.link,
+            url: `https://img.qiyedajie.com` + data.data.link,
             // meta: {
             //     id: 'xxx',
             //     title: 'xxx',
@@ -105,28 +105,19 @@ export async function routers() {
     return request(`/admin-api/index/getInfo.do`, {});
 }
 
-export async function queryCurrent() {
-    const token = localStorage.getItem('token');
-    const { value } = await routers();
-    console.log(value)
-    const user = {
-        Authorization: token,
-        ...value.userInfo,
-        access: value.uids.filter(i => i)
-    };
-    console.log(23455)
-    return new Promise((resolve, reject) => {
-        resolve(user);
+export async function queryCurrentUser() {
+    return request(`/v1/api/user/profile`, {
+        method: 'GET',
     });
 }
 export async function outLogin() {
-    return request(`/admin-api/api/login/outLogin`,{
+    return request(`/admin-api/api/login/outLogin`, {
         method: 'get',
     });
 }
-export async function fakeAccountLogin(params: any) {
-    return request(`/admin-api/login/login.do`, {
-        method: 'get',
-        params: params,
+export async function login(data: any) {
+    return request(`/v1/api/auth/login`, {
+        method: 'POST',
+        data: data,
     });
 }

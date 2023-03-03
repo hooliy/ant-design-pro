@@ -7,7 +7,7 @@ import TPageContainer from '@/components/TPageContainer';
 import Edit from './edit';
 import { useAccess } from '@umijs/max';
 import { TableDropdown } from '@ant-design/pro-components';
-import { del } from '@/owner/common-service';
+import { del, getList } from '@/owner/common-service';
 
 
 
@@ -35,7 +35,7 @@ function reducer(state = initialState, action: { type: string, payload: {} }) {
 
 
 const TableList: React.FC = () => {
-    const moduleName = "InternationalRaceReferee";
+    const moduleName = "operlog";
     const [state, dispatch] = useReducer(reducer, initialState);
     const access = useAccess();
     const actionRef = useRef();
@@ -133,7 +133,9 @@ const TableList: React.FC = () => {
                 rowKey={"key"}
                 stateKey={'list:table'}
                 columns={columns}
-                request={rule}
+                request={(params, sort, filter) => {
+                    return getList(moduleName, params)
+                }}
                 toolBarRender={() => [
                     selectRows.length > 0 && <Button
                         key="1"

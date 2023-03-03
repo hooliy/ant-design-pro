@@ -1,5 +1,5 @@
 import Footer from '@/components/Footer';
-import { login } from '@/services/ant-design-pro/api';
+import { login } from '@/owner/api';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import {
   AlipayCircleOutlined,
@@ -100,28 +100,23 @@ const Login: React.FC = () => {
     }
   };
   const handleSubmit = async (values: API.LoginParams) => {
-    try {
-      // 登录
-      const msg = await login({
-        ...values,
-        type,
-      });
-      if (msg.status === 'ok') {
-        const defaultLoginSuccessMessage = '登录成功！';
-        message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo();
-        const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
-        return;
-      }
-      console.log(msg);
-      // 如果失败去设置用户错误信息
-      setUserLoginState(msg);
-    } catch (error) {
-      const defaultLoginFailureMessage = '登录失败，请重试！';
-      console.log(error);
-      message.error(defaultLoginFailureMessage);
+    // 登录
+    const res = await login({
+      ...values,
+      type,
+    });
+    if (res.success) {
+      const defaultLoginSuccessMessage = '登录成功！';
+      message.success(defaultLoginSuccessMessage);
+      window.localStorage.setItem("token", res?.data?.accessToken);
+      await fetchUserInfo();
+      const urlParams = new URL(window.location.href).searchParams;
+      history.push(urlParams.get('redirect') || '/');
+      return;
     }
+    // 如果失败去设置用户错误信息
+    setUserLoginState(res.msg);
+
   };
   const { status, type: loginType } = userLoginState;
   return (
@@ -131,7 +126,7 @@ const Login: React.FC = () => {
           {'登录'}- {Settings.title}
         </title>
       </Helmet>
-      <Lang />
+      {/* <Lang /> */}
       <div
         style={{
           flex: '1',

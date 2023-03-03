@@ -41,6 +41,8 @@ export const errorConfig: RequestConfig = {
     // 错误接收及处理
     errorHandler: (error: any, opts: any) => {
       if (opts?.skipErrorHandler) throw error;
+
+      console.log(error)
       // 我们的 errorThrower 抛出的错误。
       if (error.name === 'BizError') {
         const errorInfo: ResponseStructure | undefined = error.info;
@@ -70,9 +72,21 @@ export const errorConfig: RequestConfig = {
           }
         }
       } else if (error.response) {
-        // Axios 的错误
-        // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
-        message.error(`Response status:${error.response.status}`);
+        const { status, data } = error.response
+        switch (status) {
+          case 400:
+            notification.error({
+              message: "提示",
+              description: data.message || "操作失败",
+            })
+            break;
+          default:
+            notification.error({
+              message: "提示",
+              description: data.message || "操作失败",
+            })
+            break;
+        }
       } else if (error.request) {
         // 请求已经成功发起，但没有收到响应
         // \`error.request\` 在浏览器中是 XMLHttpRequest 的实例，
@@ -89,7 +103,12 @@ export const errorConfig: RequestConfig = {
   requestInterceptors: [
     (config: RequestOptions) => {
       // 拦截请求配置，进行个性化处理。
-      const url = config?.url?.concat('?token = 123');
+      console.log(config.url)
+      const url = config?.url;
+      config.headers = {
+        ...config.headers,
+        Authorization: `Bearer ${window.localStorage.getItem("token")}`
+      }
       return { ...config, url };
     },
   ],

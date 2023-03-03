@@ -15,7 +15,7 @@ const Settings: ProLayoutProps & {
   contentWidth: "Fluid",
   fixedHeader: true,
   fixSiderbar: true,
-  colorWeak: false,
+  colorWeak: true,
   title: 'Ant Design Pro',
   pwa: true,
   splitMenus: true,
