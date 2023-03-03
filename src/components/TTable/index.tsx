@@ -53,7 +53,7 @@ export default function index(props: ProTableProps<any, any, any> & TTTableType)
                                     height: "100%",
                                     overflow: "hidden",
                                     ".ant-table-header": {
-                                        minHeight: "48px !important"
+                                        minHeight: "40px !important"
                                     },
                                 }
                             }
@@ -72,6 +72,7 @@ export default function index(props: ProTableProps<any, any, any> & TTTableType)
                     setting: true,
                     density: false,
                 }}
+                size="small"
                 className={className}
                 bordered
                 actionRef={actionRef}
