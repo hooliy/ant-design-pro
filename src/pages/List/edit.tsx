@@ -4,7 +4,8 @@ import TLine from '@/components/TLine';
 import { useModel } from '@umijs/max';
 import { findOne, save, update } from '@/owner/common-service';
 import { useAccess, useSearchParams } from '@umijs/max';
-import { message } from 'antd';
+import { Button, message } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 
 export default function Edit(props: any) {
   const access = useAccess();
@@ -12,9 +13,11 @@ export default function Edit(props: any) {
   const {
     values,
     onSubmit,
+    open,
     onCancel,
     mode = "edit",
   } = props;
+  const restFormRef = useRef<ProFormInstance>();
   const formRef = useRef<ProFormInstance>();
   const { initialState } = useModel('@@initialState');
 
@@ -22,18 +25,38 @@ export default function Edit(props: any) {
     <>
       <ModalForm
         //#region
+        autoFocusFirstInput
         formRef={formRef}
         title={values?.id ? mode == "read" ? "详情" : "编辑" : "新增"}
         open={true}
         width={800}
+        submitter={{
+          render: (props, defaultDoms) => {
+            return (!access.funcFilter('system:operlog:create') || access.funcFilter('system:operlog:update') && mode == "edit") ? [
+              // ...defaultDoms,
+              <Button
+                key="extra-reset"
+                onClick={() => {
+                  props.reset();
+                }}
+              >
+                重置
+              </Button>,
+              <Button
+                key="sub"
+                type="primary"
+                onClick={() => {
+                  props.submit();
+                }}
+              >
+                提交
+              </Button>
+            ] : null;
+          },
+        }}
         onFinish={async (formData) => {
-          if (!access.funcFilter('tt:list:save')) {
-            const { code, success } = values?.id ? await update(moduleName, formData) : await save(moduleName, formData);
-            if (success)
-              await onSubmit();
-          } else {
-            message.error("无权限")
-          }
+          values?.id ? await update(moduleName, formData) : await save(moduleName, formData);
+          onSubmit();
         }}
         modalProps={{
           onCancel: onCancel,
@@ -73,7 +96,7 @@ export default function Edit(props: any) {
             name="name"
             label="规则名称"
             placeholder="请输入规则名称"
-          // readonly
+            readonly={mode == "read"}
           />
           <ProFormText
             colProps={{
@@ -85,7 +108,7 @@ export default function Edit(props: any) {
             name="url"
             label="规则名称"
             placeholder="请输入规则名称"
-          // readonly
+            readonly={mode == "read"}
           />
           <ProFormTextArea
             colProps={{
@@ -97,7 +120,7 @@ export default function Edit(props: any) {
             name="stack"
             label="规则名称"
             placeholder="请输入规则名称"
-          // readonly
+            readonly={mode == "read"}
           />
           <ProFormText
             colProps={{

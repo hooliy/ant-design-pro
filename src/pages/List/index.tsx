@@ -1,12 +1,10 @@
-import { rule } from '@/services/ant-design-pro/api';
 import { DeleteOutlined, PlusOutlined, QuestionCircleOutlined, SelectOutlined } from '@ant-design/icons';
-import { Button, Input, message, Modal, Popconfirm } from 'antd';
+import { Button, Popconfirm } from 'antd';
 import React, { useReducer, useRef, useState } from 'react';
 import TTable from '@/components/TTable';
 import TPageContainer from '@/components/TPageContainer';
 import Edit from './edit';
 import { useAccess } from '@umijs/max';
-import { TableDropdown } from '@ant-design/pro-components';
 import { del, getList } from '@/owner/common-service';
 
 
@@ -65,7 +63,7 @@ const TableList: React.FC = () => {
             align: "center",
             width: 80,
             render: (_, record) => [
-                <Popconfirm disabled={access.funcFilter('tt:list:del')} title="是否删除？" okText="是" cancelText="否"
+                <Popconfirm disabled={access.funcFilter('system:operlog:del')} title="是否删除？" okText="是" cancelText="否"
                     onConfirm={
                         async () => {
                             await del(moduleName, [record?.id])
@@ -73,9 +71,9 @@ const TableList: React.FC = () => {
                         }
                     }
                     icon={<QuestionCircleOutlined style={{ color: 'red' }} />}>
-                    <Button size="small" disabled={access.funcFilter('tt:list:delete')} type="link"><DeleteOutlined /></Button>
+                    <Button size="small" disabled={access.funcFilter('system:operlog:delete')} type="link"><DeleteOutlined /></Button>
                 </Popconfirm>,
-                <Button size="small" disabled={access.funcFilter('tt:list:details')} type="link" onClick={async () => {
+                <Button size="small" disabled={access.funcFilter('system:operlog:details')} type="link" onClick={async () => {
                     dispatch({ type: "PAYLOAD", payload: { editModalVisible: true, record: record } });
                 }}><SelectOutlined /></Button >,
                 // <TableDropdown
@@ -91,7 +89,7 @@ const TableList: React.FC = () => {
                 //     menus={[
                 //         {
                 //             key: '2',
-                //             name: <Button size="small" type="link" disabled={(access.funcFilter('tt:list:save'))}>迁出</Button>,
+                //             name: <Button size="small" type="link" disabled={(access.funcFilter('system:operlog:save'))}>迁出</Button>,
                 //         },
                 //     ]}
                 // />,
@@ -110,17 +108,16 @@ const TableList: React.FC = () => {
                     return await getList(moduleName, { params, sort, filter });
                 }}
                 toolBarRender={() => [
-                    !access.funcFilter('tt:list:delete') && (selectRows.length > 0 && <Button
+                    !access.funcFilter('system:operlog:delete') && (selectRows.length > 0 && <Button
                         key="1"
                         onClick={async () => {
-                            console.log(selectRows)
                             await del(moduleName, selectRows);
                             actionRef.current?.reloadAndRest?.();
                         }}
                     >
                         批量删除
                     </Button>),
-                    !access.funcFilter('tt:list:create') && <Button
+                    !access.funcFilter('system:operlog:create') && <Button
                         type="primary"
                         key="2"
                         onClick={() => {
@@ -135,6 +132,8 @@ const TableList: React.FC = () => {
             {
                 state.editModalVisible && <Edit
                     values={state.record}
+                    mode={"edit"}
+                    open={state.editModalVisible}
                     onCancel={() => {
                         dispatch({ type: "PAYLOAD", payload: { editModalVisible: false, record: undefined } })
                     }}
