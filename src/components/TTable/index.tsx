@@ -89,6 +89,11 @@ export default function index(props: ProTableProps<any, any, any> & TTTableType)
                 search={{
                     labelWidth: 120,
                 }}
+                pagination={{
+                    showSizeChanger: true,
+                    defaultPageSize: 30,
+                    pageSizeOptions: [30, 50, 100]
+                }}
                 scroll={{ x: 500, y: "auto" }}
                 columnsState={{
                     persistenceKey: stateKey,

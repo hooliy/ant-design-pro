@@ -2,6 +2,7 @@
 import type { RequestConfig } from '@umijs/max';
 import { message, notification } from 'antd';
 import { isArray } from 'lodash';
+import { history, Link } from '@umijs/max';
 
 // 错误处理方案： 错误类型
 enum ErrorShowType {
@@ -80,6 +81,13 @@ export const errorConfig: RequestConfig = {
               message: "提示",
               description: data.message || "操作失败",
             })
+            break;
+          case 401:
+            notification.error({
+              message: "提示",
+              description: data.message || "操作失败",
+            })
+            history.push("/user/login");
             break;
           default:
             notification.error({

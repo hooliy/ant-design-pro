@@ -1,11 +1,9 @@
 import React, { useRef } from 'react';
-import { ModalForm, ProCard, ProForm, ProFormDatePicker, ProFormInstance, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
-import TLine from '@/components/TLine';
+import { ModalForm, ProForm, ProFormInstance, ProFormText } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
 import { findOne, save, update } from '@/owner/common-service';
-import { useAccess, useSearchParams } from '@umijs/max';
+import { useAccess } from '@umijs/max';
 import { Button, message } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
 
 export default function Edit(props: any) {
   const access = useAccess();
@@ -56,6 +54,7 @@ export default function Edit(props: any) {
         }}
         onFinish={async (formData) => {
           values?.id ? await update(moduleName, formData) : await save(moduleName, formData);
+          message.success("提交成功！")
           onSubmit();
         }}
         modalProps={{

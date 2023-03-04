@@ -1,11 +1,12 @@
 import { DeleteOutlined, PlusOutlined, QuestionCircleOutlined, SelectOutlined } from '@ant-design/icons';
-import { Button, Popconfirm } from 'antd';
+import { Button, message, Popconfirm } from 'antd';
 import React, { useReducer, useRef, useState } from 'react';
 import TTable from '@/components/TTable';
 import TPageContainer from '@/components/TPageContainer';
 import Edit from './edit';
 import { useAccess } from '@umijs/max';
 import { del, getList } from '@/owner/common-service';
+import { ProFormDateRangePicker } from '@ant-design/pro-components';
 
 
 
@@ -58,11 +59,18 @@ const TableList: React.FC = () => {
             title: '手机号',
             dataIndex: 'phonenumber',
             width: 300,
+            disable: true
         },
         {
             title: '性别',
             dataIndex: 'sex',
             width: 300,
+            valueEnum: {
+                1: "男",
+                0: "女",
+                2: "未知"
+            },
+            filters: true,
         },
         {
             title: '帐号状态',
@@ -85,6 +93,46 @@ const TableList: React.FC = () => {
             width: 300,
         },
         {
+            title: '创建时间',
+            dataIndex: 'createdAt',
+            sorter: true,
+            width: 150,
+            hideInSearch: true
+        },
+        {
+            title: '创建时间',
+            dataIndex: 'createdAt',
+            hideInTable: true,
+            valueType: "dateRange",
+            search: {
+                transform: (fields: any) => {
+                    return {
+                        "createdAt": [fields[0], fields[1]]
+                    };
+                }
+            }
+        },
+        {
+            title: '修改时间',
+            dataIndex: 'updatedAt',
+            sorter: true,
+            width: 150,
+            hideInSearch: true
+        },
+        {
+            title: '修改时间',
+            dataIndex: 'updatedAt',
+            hideInTable: true,
+            valueType: "dateRange",
+            search: {
+                transform: (fields: any) => {
+                    return {
+                        "updatedAt": [fields[0], fields[1]]
+                    };
+                }
+            }
+        },
+        {
             title: '操作',
             dataIndex: 'option',
             valueType: 'option',
@@ -95,6 +143,7 @@ const TableList: React.FC = () => {
                     onConfirm={
                         async () => {
                             await del(moduleName, [record?.id])
+                            message.success("删除成功！");
                             actionRef.current?.reloadAndRest();
                         }
                     }
@@ -140,6 +189,7 @@ const TableList: React.FC = () => {
                         key="1"
                         onClick={async () => {
                             await del(moduleName, selectRows);
+                            message.success("删除成功！");
                             actionRef.current?.reloadAndRest?.();
                         }}
                     >
