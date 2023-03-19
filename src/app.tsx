@@ -7,9 +7,9 @@ import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
-import React from 'react';
-import { AvatarDropdown, AvatarName } from './components/RightContent/AvatarDropdown';
 import { queryCurrentUser } from './owner/api';
+import React from 'react';
+import { AvatarDropdown, AvatarName } from '@/components/RightContent/AvatarDropdown';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -101,25 +101,27 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
-    // childrenRender: (children) => {
-    //   // if (initialState?.loading) return <PageLoading />;
-    //   return (
-    //     <>
-    //       {children}
-    //       <SettingDrawer
-    //         disableUrlParams
-    //         enableDarkTheme
-    //         settings={initialState?.settings}
-    //         onSettingChange={(settings) => {
-    //           setInitialState((preInitialState) => ({
-    //             ...preInitialState,
-    //             settings,
-    //           }));
-    //         }}
-    //       />
-    //     </>
-    //   );
-    // },
+    childrenRender: (children) => {
+      // if (initialState?.loading) return <PageLoading />;
+      return (
+        <>
+          {children}
+          {isDev && (
+            <SettingDrawer
+              disableUrlParams
+              enableDarkTheme
+              settings={initialState?.settings}
+              onSettingChange={(settings) => {
+                setInitialState((preInitialState) => ({
+                  ...preInitialState,
+                  settings,
+                }));
+              }}
+            />
+          )}
+        </>
+      );
+    },
     ...initialState?.settings,
   };
 };
